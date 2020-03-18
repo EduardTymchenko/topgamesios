@@ -33,6 +33,8 @@ public class MainRestController {
     @GetMapping("/ios/games/charts/{type}")
     public ResponseEntity<List<Game>> getListGames(@PathVariable String type,
                                                    @RequestParam(required = false) Map<String, String> allParams) {
+        String logInReq = "Client send request: /ios/games/charts/" + type + ", parameters: " + allParams.toString();
+        LOGGER.info(logInReq);
         try {
             if (!type.equals(type.toLowerCase())) {
                 String logWarn = "Endpoint not correct: /ios/games/charts/" + type;
