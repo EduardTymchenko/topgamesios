@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./css/topGame.css">
+    <title>Top games for iOS in Ukraine</title>
+</head>
+
+<body>
+    <div class="fixed-block">
+        <header>
+            <div class="header-contener">
+                <h1>Top-100 games for iOS in Ukraine</h1>
+            </div>
+        </header>
+        <div class="main-contener">
+            <div class="content">
+                <div class="update-contener">
+                    <div id="form-block-id">
+                        <div class="checkbox-contener" id="checkbox-contener-type-games">
+                            <label class="checkbox-item"><input type="checkbox" name="check1" value="free" >Free</label>
+                            <label class="checkbox-item"><input type="checkbox" name="check2" value="paid">Paid</label>
+                            <label class="checkbox-item"><input type="checkbox" name="check3" value="grossing">Grossing</label>
+                        </div>
+                        <input type="number" name="limit-list" id="input-limit-list" min=0 step="10"
+                            placeholder="default 100 games">
+                        <button type="button" id="btn-update">Update</button>
+                    </div>
+                </div>
+            </div>
+            <div class="content">
+                <div class="table-header-contener">
+                    <div class="th">Name</div>
+                    <div class="th">URL</div>
+                    <div class="th">Release Date</div>
+                    <div class="th">Creator</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-contener">
+        <div class="content">
+            <div class="games-contener">
+                <table id="table-list-games">                   
+                </table>
+                <template id="tr-type-games-templ">
+                    <tbody>
+                        <tr>
+                            <td class="td-type-games" colspan="4"></td>
+                        </tr>
+                    </tbody>
+                </template>
+                <template id="tr-item-games-templ">
+                    <tr>
+                        <td></td>
+                        <td class="td-url"></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </template>
+            </div>
+        </div>
+
+    </div>
+    <script src="./js/topGames.js"></script>
+</body>
+
+</html>
