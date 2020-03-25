@@ -1,0 +1,19 @@
+version: "3.7"
+services:
+  topgames:
+    build: .
+    ports:
+      - "8080:8080"
+    links:
+      - db:redis
+    depends_on:
+      - db
+  db:
+    image: "redis:latest"
+    hostname: redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+
+
