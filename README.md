@@ -24,9 +24,9 @@ Example - /ios/games/charts/paid?limit=25 - returns top 25 paid games
 5. Response include an ordered array with names of top games and their URLs:
 [ { name, url, releaseDate, artistName }]
 
-6. Back-end tech stack  - Java + Spring Boot (MVC) + Redis.
+6. **Back-end** tech stack  - Java + Spring Boot (MVC) + Redis.
 
-7. Front-end tech stack  - HTML + CSS + JavaScript.
+7. **Front-end** tech stack  - HTML + CSS + JavaScript.
 
 8. You can start the service using Docker-compose:
 
