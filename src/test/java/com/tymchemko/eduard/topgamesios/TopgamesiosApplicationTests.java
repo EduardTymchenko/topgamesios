@@ -5,10 +5,17 @@ import com.tymchemko.eduard.topgamesios.domain.Game;
 import com.tymchemko.eduard.topgamesios.domain.TypeGames;
 import com.tymchemko.eduard.topgamesios.service.GameService;
 import com.tymchemko.eduard.topgamesios.service.ScheduledTasks;
+import org.junit.Assume;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.redis.RedisConnectionFailureException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 
 import java.util.*;
@@ -17,8 +24,12 @@ import static org.junit.Assert.*;
 
 @SpringBootTest
 class TopgamesiosApplicationTests {
+    private static final Logger LOGGER_TEST = LoggerFactory.getLogger(MainRestController.class);
     @MockBean
     ScheduledTasks scheduledTasks;
+
+    @Autowired
+    RedisTemplate<TypeGames, Game> redisTemplate;
 
     @Autowired
     MainRestController mainController;
@@ -26,23 +37,41 @@ class TopgamesiosApplicationTests {
     @Autowired
     GameService gameService;
 
-    // Tests MainRestController
+    @BeforeEach
+    public void checkConnectDataBase() {
+        LOGGER_TEST.info("### Test logger. Start check connection Redis base before test.");
+        Assume.assumeTrue(isConnectBase());
+        LOGGER_TEST.info("### Test logger. Connection to base, Ok.");;
+    }
+
+    private boolean isConnectBase(){
+        try {
+            RedisConnection connection = redisTemplate.getConnectionFactory().getConnection();
+            connection.close();
+        }catch (RedisConnectionFailureException ex){
+            LOGGER_TEST.warn("### Test logger. Connection to base, ERROR.");
+            return false;
+        }
+        return true;
+    }
+
+//     Tests MainRestController
     @Test
     public void EndPointWithoutParameterReturn200Test() {
-        String[] endPoins = {"free", "paid", "grossing"};
-        Map<String, String> parameters = Collections.emptyMap();
-        int[] arrayLengthRecordBase = {0, 1, 20, 99, 100, 101, 150, 200};
-        int expectedSizeResponse;
-        for (int i = 0; i < arrayLengthRecordBase.length; i++) {
-            createBaseByLength(arrayLengthRecordBase[i]);
-            for (int j = 0; j < endPoins.length; j++) {
-                ResponseEntity<List<Game>> resp = mainController.getListGames(endPoins[j], parameters);
-                assertTrue(resp.getStatusCode().is2xxSuccessful());
-                expectedSizeResponse = arrayLengthRecordBase[i];
-                if (arrayLengthRecordBase[i] > 100) expectedSizeResponse = 100;
-                assertEquals(expectedSizeResponse, resp.getBody().size());
+            String[] endPoins = {"free", "paid", "grossing"};
+            Map<String, String> parameters = Collections.emptyMap();
+            int[] arrayLengthRecordBase = {0, 1, 20, 99, 100, 101, 150, 200};
+            int expectedSizeResponse;
+            for (int i = 0; i < arrayLengthRecordBase.length; i++) {
+                createBaseByLength(arrayLengthRecordBase[i]);
+                for (int j = 0; j < endPoins.length; j++) {
+                    ResponseEntity<List<Game>> resp = mainController.getListGames(endPoins[j], parameters);
+                    assertTrue(resp.getStatusCode().is2xxSuccessful());
+                    expectedSizeResponse = arrayLengthRecordBase[i];
+                    if (arrayLengthRecordBase[i] > 100) expectedSizeResponse = 100;
+                    assertEquals(expectedSizeResponse, resp.getBody().size());
+                }
             }
-        }
     }
 
     @Test
@@ -104,7 +133,7 @@ class TopgamesiosApplicationTests {
     }
 
     @Test
-    public void EndPointWithParameterNameIsNotCorrectTest() throws Exception {
+    public void EndPointWithParameterNameIsNotCorrectTest() {
         String[] incorrectParameter = {"limit1", "Limit", " limit", "any", " ", "LIMIT"};
         String[] valueParam = {"0", "-1", "101", "", " ", "any", "1", "40", "100"};
         String[] endPoins = {"free", "paid", "grossing"};
